@@ -46,10 +46,9 @@ module Daemons
           sleep(10)
           
           unless a.running?
+            Lock.where("process like '%#{a.pid}'").destroy_all
             a.zap!
-            
             Process.detach(fork { a.start })
-            
             sleep(10)
           end
         }
